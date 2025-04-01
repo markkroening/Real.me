@@ -1,0 +1,20 @@
+{
+    "name": "realme-api",
+    "version": "1.0.0",
+    "type": "module",
+    "main": "src/server.ts",
+    "scripts": {
+        "dev": "tsx watch src/server.ts"
+    },
+    "dependencies": {
+        "@fastify/jwt": "^9.1.0",
+        "@supabase/supabase-js": "^2.49.4",
+        "dotenv": "^16.4.7",
+        "fastify": "^4.29.0",
+        "zod": "^3.24.2"
+    },
+    "devDependencies": {
+        "tsx": "^4.19.3",
+        "typescript": "^5.8.2"
+    }
+}
