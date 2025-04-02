@@ -47,14 +47,25 @@ export async function softDeletePost(id: string) {
   if (error) throw error;
 }
 
-export async function getAllPosts() {
-    const { data, error } = await db
+export async function getAllPosts({ limit = 10, offset = 0, type }: {
+    limit?: number;
+    offset?: number;
+    type?: string;
+  }) {
+    let query = db
       .from('posts')
       .select('*')
       .eq('is_removed', false)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1);
   
+    if (type) {
+      query = query.eq('content_type', type);
+    }
+  
+    const { data, error } = await query;
     if (error) throw error;
     return data;
   }
+  
   

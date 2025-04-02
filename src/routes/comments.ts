@@ -22,7 +22,7 @@ export default async function commentRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // POST /comments
+  // POST /comments (requires auth)
   fastify.post('/', { preHandler: requireAuth }, async (request, reply) => {
     try {
       const parseResult = CommentSchema.safeParse(request.body);
@@ -34,14 +34,18 @@ export default async function commentRoutes(fastify: FastifyInstance) {
         });
       }
 
-      const userId = (request.user as any).sub;
+      // parseResult.data is typed from our Zod schema
+      const validatedBody = parseResult.data;
+      const userId = (request.user as any).sub; // from JWT token
 
-      const validatedComment = {
-        ...parseResult.data,
+      // Merge the token user ID into the final data we send to createComment
+      const finalComment = {
+        ...validatedBody,
         author_id: userId
       };
 
-      const newComment = await createComment(validatedComment);
+      // Now finalComment exactly matches CreateCommentInput
+      const newComment = await createComment(finalComment);
       return reply.code(201).send(newComment);
     } catch (err) {
       fastify.log.error(err);
@@ -49,7 +53,7 @@ export default async function commentRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // DELETE /comments/:id
+  // DELETE /comments/:id (protected)
   fastify.delete('/:id', { preHandler: requireAuth }, async (request, reply) => {
     try {
       const { id } = request.params as { id: string };

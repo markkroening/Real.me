@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { getAllUsers, createUser, getUserById } from '../services/usersService.js';
+import { getProfileByUserId, createProfile } from '../services/profileService';
 import { z } from 'zod';
 
 const userSchema = z.object({
@@ -13,13 +13,13 @@ const userSchema = z.object({
 export default async function usersRoutes(fastify: FastifyInstance) {
   // GET /users
   fastify.get('/', async () => {
-    return getAllUsers();
+    return getAllProfiles();
   });
 
   // GET /users/:id
   fastify.get('/:id', async (request, reply) => {
     const { id } = request.params as { id: string };
-    const user = await getUserById(id);
+    const user = await getProfileByUserId(id);
 
     if (!user) {
       return reply.code(404).send({ error: 'User not found' });
