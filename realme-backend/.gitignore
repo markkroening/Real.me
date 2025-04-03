@@ -1,4 +1,0 @@
-node_modules/
-dist/  # Or whatever your build output folder is called, if any
-.env
-*.log
